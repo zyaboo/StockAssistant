@@ -1,0 +1,13 @@
+{
+	"Name": "Stock Assistant",
+	"ID": "stockAssistant",
+	"Author": "zyaboo",
+	"Description": "株取引を補助するためのMOD",
+	"ModVersion": 0.1,
+	"GameVersion": 2.042,
+	"Date": "24/09/2021",
+	"Dependencies": [],
+	"LanguagePacks": ["lang.js"],
+	"Disabled": 1,
+	"AllowSteamAchievs": 1
+}
