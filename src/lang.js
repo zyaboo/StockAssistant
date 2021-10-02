@@ -15,3 +15,20 @@ ModLanguage('JA', {
 	"Fast Fall" : "急降下",
 	"Caostic" : "乱高下",
 });
+ModLanguage('ZH-CN', {
+	// 标签
+	"Bought value" : "买入价格",
+	"Resting value" : "标准价格",
+	"Min value" : "最低价格",
+	"Max value" : "最高价格",
+	"Mode" : "状态",
+	"Duration" : "剩余tick数",
+	"change the seconds per tick" : "更改每个tick的周期（秒） ",
+	// 模式名称
+	"Stable" : "稳定",
+	"Slow Rise" : "缓慢上升",
+	"Slow Fall" : "缓慢回落",
+	"Fast Rise" : "快速拉升",
+	"Fast Fall" : "快速回落",
+	"Caostic" : "涨落不定",
+});

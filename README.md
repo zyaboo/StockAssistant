@@ -5,6 +5,8 @@ Coockie Clicker([Steam](https://store.steampowered.com/app/1454400/Cookie_Clicke
 
 ![StockAssistant](https://user-images.githubusercontent.com/91243835/134629261-f57cc796-f5b0-42aa-ae54-ed194ab2486a.png)
 
+[中文说明](./README-zh_CN.md)
+
 # 機能
 * 有益な情報を可視化
   * 購入価格
