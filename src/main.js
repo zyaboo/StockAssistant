@@ -75,8 +75,8 @@ StockAssistant.launch = function()
 
 			let boughtVal = 0;
 			let stock = 0;
-			let min = 0;
-			let max = 0;
+			let min = Number(Beautify(good.val,2));
+			let max = min;
 
 			// ロードデータあれば使用する
 			if (loadData.goods[idx])
