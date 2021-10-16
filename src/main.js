@@ -7,6 +7,8 @@ StockAssistant.name = 'Stock Assistant';
 
 StockAssistant.launch = function()
 {
+	let initialized = false;
+
 	const modeName = {
 		0 : 'Stable',
 		1 : 'Slow Rise',
@@ -30,7 +32,15 @@ StockAssistant.launch = function()
 	};
 
 	let loadData = {
-		goods : []
+		goods : [],
+		views : {
+			boughtValue : 1,
+			restingValue : 1,
+			minValue : 1,
+			maxValue : 1,
+			mode : 1,
+			duration : 1,
+		},
 	};
 
 	StockAssistant.stockData = {
@@ -167,8 +177,19 @@ StockAssistant.launch = function()
 			modeUpdateById(idx);
 		}
 
+		// 表示切り替え反映
+		for (let idx in columnList)
+		{
+			if (StockAssistant.stockData.views[columnList[idx]] !== loadData.views[columnList[idx]])
+			{
+				StockAssistant.toggleColumnView(columnList[idx]);
+			}
+		}
+
 		Game.registerHook('reset', StockAssistant.reset);
 		Game.registerHook('logic', StockAssistant.logic);
+
+		initialized = true;
 	}
 
 	StockAssistant.save = function()
@@ -179,6 +200,15 @@ StockAssistant.launch = function()
 			let it = StockAssistant.stockData.goods[idx];
 			str += parseInt(it.boughtVal * 100) + ':' + parseInt(it.stock) + ':' + parseInt(it.min * 100) + ':' + parseInt(it.max * 100) + '!';
 		}
+
+		let viewVal = 0;
+		for (let idx in columnList)
+		{
+			let id = columnList[idx];
+			viewVal += StockAssistant.stockData.views[id] * (2 ** parseInt(idx));
+		}
+		str += '|' + viewVal;
+
 		return str;
 	}
 
@@ -186,7 +216,10 @@ StockAssistant.launch = function()
 	{
 		if (!str) return false;
 
-		let goods = str.split('!');
+		let tmp = str.split('|');
+
+		let goods = tmp[0].split('!');
+		let views = parseInt(tmp[1]);
 
 		for (let idx = 0; idx < goods.length; ++idx)
 		{
@@ -201,18 +234,37 @@ StockAssistant.launch = function()
 			};
 		}
 
-		for (let idx = 0; idx < StockAssistant.stockData.goods.length; ++idx)
+		for (let idx in columnList)
 		{
-			if (!loadData.goods[idx]) continue;
+			loadData.views[columnList[idx]] = views % 2;
+			views = Math.floor(views / 2);
+		}
 
-			let it = StockAssistant.stockData.goods[idx];
+		if (initialized)
+		{
+			// 保持データ反映
+			for (let idx = 0; idx < StockAssistant.stockData.goods.length; ++idx)
+			{
+				if (!loadData.goods[idx]) continue;
+	
+				let it = StockAssistant.stockData.goods[idx];
+	
+				it.boughtVal = loadData.goods[idx].boughtVal;
+				it.stock = loadData.goods[idx].stock;
+				it.min = loadData.goods[idx].min;
+				it.max = loadData.goods[idx].max;
+	
+				it.boughtValL.innerHTML = '$'+it.boughtVal;
+			}
 
-			it.boughtVal = loadData.goods[idx].boughtVal;
-			it.stock = loadData.goods[idx].stock;
-			it.min = loadData.goods[idx].min;
-			it.max = loadData.goods[idx].max;
-
-			it.boughtValL.innerHTML = '$'+it.boughtVal;
+			// 表示切り替え反映
+			for (let idx in columnList)
+			{
+				if (StockAssistant.stockData.views[columnList[idx]] !== loadData.views[columnList[idx]])
+				{
+					StockAssistant.toggleColumnView(columnList[idx]);
+				}
+			}
 		}
 	}
 
