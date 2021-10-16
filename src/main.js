@@ -18,7 +18,16 @@ StockAssistant.launch = function()
 	function getModeName(mode)
 	{
 		return loc(modeName[mode]);
-	}
+	};
+
+	const columnList = {
+		0 : 'boughtValue',
+		1 : 'restingValue',
+		2 : 'minValue',
+		3 : 'maxValue',
+		4 : 'mode',
+		5 : 'duration'
+	};
 
 	let loadData = {
 		goods : []
@@ -27,6 +36,14 @@ StockAssistant.launch = function()
 	StockAssistant.stockData = {
 		level : 0,
 		goods : [],
+		views : {
+			boughtValue : 1,
+			restingValue : 1,
+			minValue : 1,
+			maxValue : 1,
+			mode : 1,
+			duration : 1,
+		},
 	};
 
 	//////////////////////////////////////////////////
@@ -61,6 +78,23 @@ StockAssistant.launch = function()
 		sptList.forEach(spt => {
 			AddEvent(l('bankSecondsPerTick_' + spt),'click',function(spt){return function(e){StockAssistant.stockMarket.secondsPerTick=spt;}}(spt));
 		});
+
+		let optStr 
+			= '<div style="padding: 1px 4px;">'
+			+ '<span class="bankSymbol">' + loc('display switching') + '</span>'
+			+ '<div class="bankButton bankButtonBuy" id="toggleView_boughtValue">' + loc('Bought value') + '</div>'
+			+ '<div class="bankButton bankButtonBuy" id="toggleView_restingValue">' + loc('Resting value') + '</div>'
+			+ '<div class="bankButton bankButtonBuy" id="toggleView_minValue">' + loc('Min value') + '</div>'
+			+ '<div class="bankButton bankButtonBuy" id="toggleView_maxValue">' + loc('Max value') + '</div>'
+			+ '<div class="bankButton bankButtonBuy" id="toggleView_mode">' + loc('Mode') + '</div>'
+			+ '<div class="bankButton bankButtonBuy" id="toggleView_duration">' + loc('Duration') + '</div>'
+			+ '</div>';
+		l('bankHeader').firstChild.insertAdjacentHTML('beforeend', optStr);
+
+		for (let idx in columnList)
+		{
+			AddEvent(l('toggleView_'+ columnList[idx]),'click',function(){return function(e){StockAssistant.toggleColumnView(columnList[idx]);}}());
+		}
 
 		for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
 		{
@@ -111,6 +145,14 @@ StockAssistant.launch = function()
 				boughtVal : boughtVal,
 				min : min,
 				max : max,
+				columnL : {
+					boughtValue : l(keyBoughtVal).parentElement,
+					restingValue : l(keyRestingVal).parentElement,
+					minValue : l(keyMinVal).parentElement,
+					maxValue : l(keyMaxVal).parentElement,
+					mode : l(keyMode).parentElement,
+					duration :l(keyDur).parentElement
+				}
 			};
 
 			AddEvent(l('bankGood-'+idx+'_1'),'click',function(idx){return function(e){StockAssistant.buyGood(idx);}}(idx));
@@ -287,6 +329,26 @@ StockAssistant.launch = function()
 		}
 	}
 
+	StockAssistant.toggleColumnView = function(id)
+	{
+		StockAssistant.stockData.views[id] = 1 - StockAssistant.stockData.views[id];
+
+		if (StockAssistant.stockData.views[id])
+		{
+			l('toggleView_'+id).classList.remove('bankButtonOff');
+		}
+		else
+		{
+			l('toggleView_'+id).classList.add('bankButtonOff');
+		}
+		let display = StockAssistant.stockData.views[id] ? 'block' : 'none' ;
+		
+		for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
+		{
+			StockAssistant.stockData.goods[idx].columnL[id].style.display = display;
+		}
+	}
+
 	//////////////////////////////////////////////////
 	// private method
 	//////////////////////////////////////////////////
@@ -295,7 +357,7 @@ StockAssistant.launch = function()
 	{
 		let div = document.createElement('div');
 		div.innerHTML = '<div class="bankSymbol" style="margin:1px 0px;display:block;font-size:10px;width:100%;background:linear-gradient(to right,transparent,#333,#333,transparent);padding:2px 0px;overflow:hidden;white-space:nowrap;"> ' + name + '： <span style="font-weight:bold;" id="' + key + '">' + value + '</span></div>';
-		return div;
+		return div.firstChild;
 	}
 
 	function modeUpdateById(id)
