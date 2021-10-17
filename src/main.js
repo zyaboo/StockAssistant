@@ -90,7 +90,8 @@ StockAssistant.launch = function()
 		});
 
 		let optStr 
-			= '<div style="padding: 1px 4px;">'
+			= '<div>'
+			+ '<div style="display: inline-block; padding: 1px 4px;">'
 			+ '<span class="bankSymbol">' + loc('display switching') + '</span>'
 			+ '<div class="bankButton bankButtonSell" id="toggleView_boughtValue">' + loc('Bought value') + '</div>'
 			+ '<div class="bankButton bankButtonSell" id="toggleView_restingValue">' + loc('Resting value') + '</div>'
@@ -98,13 +99,23 @@ StockAssistant.launch = function()
 			+ '<div class="bankButton bankButtonSell" id="toggleView_maxValue">' + loc('Max value') + '</div>'
 			+ '<div class="bankButton bankButtonSell" id="toggleView_mode">' + loc('Mode') + '</div>'
 			+ '<div class="bankButton bankButtonSell" id="toggleView_duration">' + loc('Duration') + '</div>'
+			+ '</div>'
+			+ '<div style="display: inline-block; padding: 1px 4px;">'
+			+ '<span class="bankSymbol">' + loc('display reset') + '</span>'
+			+ '<div class="bankButton bankButtonBuy" id="reset_minValue">' + loc('Min value') + '</div>'
+			+ '<div class="bankButton bankButtonBuy" id="reset_maxValue">' + loc('Max value') + '</div>'
+			+ '</div>'
 			+ '</div>';
+
 		l('bankHeader').firstChild.insertAdjacentHTML('beforeend', optStr);
 
 		for (let idx in columnList)
 		{
 			AddEvent(l('toggleView_'+ columnList[idx]),'click',function(){return function(e){StockAssistant.toggleColumnView(columnList[idx]);}}());
 		}
+
+		AddEvent(l('reset_minValue'),'click',function(){return function(e){StockAssistant.resetVal('minValue');}}());
+		AddEvent(l('reset_maxValue'),'click',function(){return function(e){StockAssistant.resetVal('maxValue');}}());
 
 		for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
 		{
@@ -398,6 +409,37 @@ StockAssistant.launch = function()
 		for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
 		{
 			StockAssistant.stockData.goods[idx].columnL[id].style.display = display;
+		}
+	}
+
+	StockAssistant.resetVal = function(id)
+	{
+		switch (id)
+		{
+			case columnList[2]:
+				// minVal
+				for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
+				{
+					let good = StockAssistant.stockMarket.goodsById[idx];
+					let it = StockAssistant.stockData.goods[idx];
+					
+					val = Number(Beautify(good.val,2));
+					it.min = val;
+					it.minL.innerHTML = '$'+val;
+				}
+				break;
+			case columnList[3]:
+				// maxVal
+				for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
+				{
+					let good = StockAssistant.stockMarket.goodsById[idx];
+					let it = StockAssistant.stockData.goods[idx];
+					
+					val = Number(Beautify(good.val,2));
+					it.max = val;
+					it.maxL.innerHTML = '$'+val;
+				}
+				break;
 		}
 	}
 
