@@ -7,6 +7,8 @@ StockAssistant.name = 'Stock Assistant';
 
 StockAssistant.launch = function()
 {
+	let initialized = false;
+
 	const modeName = {
 		0 : 'Stable',
 		1 : 'Slow Rise',
@@ -18,15 +20,40 @@ StockAssistant.launch = function()
 	function getModeName(mode)
 	{
 		return loc(modeName[mode]);
-	}
+	};
+
+	const columnList = {
+		0 : 'boughtValue',
+		1 : 'restingValue',
+		2 : 'minValue',
+		3 : 'maxValue',
+		4 : 'mode',
+		5 : 'duration'
+	};
 
 	let loadData = {
-		goods : []
+		goods : [],
+		views : {
+			boughtValue : 1,
+			restingValue : 1,
+			minValue : 1,
+			maxValue : 1,
+			mode : 1,
+			duration : 1,
+		},
 	};
 
 	StockAssistant.stockData = {
 		level : 0,
 		goods : [],
+		views : {
+			boughtValue : 1,
+			restingValue : 1,
+			minValue : 1,
+			maxValue : 1,
+			mode : 1,
+			duration : 1,
+		},
 	};
 
 	//////////////////////////////////////////////////
@@ -62,6 +89,34 @@ StockAssistant.launch = function()
 			AddEvent(l('bankSecondsPerTick_' + spt),'click',function(spt){return function(e){StockAssistant.stockMarket.secondsPerTick=spt;}}(spt));
 		});
 
+		let optStr 
+			= '<div>'
+			+ '<div style="display: inline-block; padding: 1px 4px;">'
+			+ '<span class="bankSymbol">' + loc('display switching') + '</span>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_boughtValue">' + loc('Bought value') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_restingValue">' + loc('Resting value') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_minValue">' + loc('Min value') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_maxValue">' + loc('Max value') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_mode">' + loc('Mode') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_duration">' + loc('Duration') + '</div>'
+			+ '</div>'
+			+ '<div style="display: inline-block; padding: 1px 4px;">'
+			+ '<span class="bankSymbol">' + loc('display reset') + '</span>'
+			+ '<div class="bankButton bankButtonBuy" id="reset_minValue">' + loc('Min value') + '</div>'
+			+ '<div class="bankButton bankButtonBuy" id="reset_maxValue">' + loc('Max value') + '</div>'
+			+ '</div>'
+			+ '</div>';
+
+		l('bankHeader').firstChild.insertAdjacentHTML('beforeend', optStr);
+
+		for (let idx in columnList)
+		{
+			AddEvent(l('toggleView_'+ columnList[idx]),'click',function(){return function(e){StockAssistant.toggleColumnView(columnList[idx]);}}());
+		}
+
+		AddEvent(l('reset_minValue'),'click',function(){return function(e){StockAssistant.resetVal('minValue');}}());
+		AddEvent(l('reset_maxValue'),'click',function(){return function(e){StockAssistant.resetVal('maxValue');}}());
+
 		for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
 		{
 			let good = StockAssistant.stockMarket.goodsById[idx];
@@ -83,8 +138,8 @@ StockAssistant.launch = function()
 			{
 				boughtVal = loadData.goods[idx].boughtVal;
 				stock = loadData.goods[idx].stock;
-				min = loadData.goods[idx].min;
-				max = loadData.goods[idx].max;
+				if (loadData.goods[idx].min !==0) min = loadData.goods[idx].min;
+				if (loadData.goods[idx].max !==0) max = loadData.goods[idx].max;
 			}
 			// データ無いけど購入済の場合は購入価格が不明なので基準価格を入れておく
 			if ((boughtVal == 0 || stock == 0) && good.stock != 0)
@@ -111,6 +166,14 @@ StockAssistant.launch = function()
 				boughtVal : boughtVal,
 				min : min,
 				max : max,
+				columnL : {
+					boughtValue : l(keyBoughtVal).parentElement,
+					restingValue : l(keyRestingVal).parentElement,
+					minValue : l(keyMinVal).parentElement,
+					maxValue : l(keyMaxVal).parentElement,
+					mode : l(keyMode).parentElement,
+					duration :l(keyDur).parentElement
+				}
 			};
 
 			AddEvent(l('bankGood-'+idx+'_1'),'click',function(idx){return function(e){StockAssistant.buyGood(idx);}}(idx));
@@ -125,8 +188,19 @@ StockAssistant.launch = function()
 			modeUpdateById(idx);
 		}
 
+		// 表示切り替え反映
+		for (let idx in columnList)
+		{
+			if (StockAssistant.stockData.views[columnList[idx]] !== loadData.views[columnList[idx]])
+			{
+				StockAssistant.toggleColumnView(columnList[idx]);
+			}
+		}
+
 		Game.registerHook('reset', StockAssistant.reset);
 		Game.registerHook('logic', StockAssistant.logic);
+
+		initialized = true;
 	}
 
 	StockAssistant.save = function()
@@ -137,6 +211,15 @@ StockAssistant.launch = function()
 			let it = StockAssistant.stockData.goods[idx];
 			str += parseInt(it.boughtVal * 100) + ':' + parseInt(it.stock) + ':' + parseInt(it.min * 100) + ':' + parseInt(it.max * 100) + '!';
 		}
+
+		let viewVal = 0;
+		for (let idx in columnList)
+		{
+			let id = columnList[idx];
+			viewVal += StockAssistant.stockData.views[id] * (2 ** parseInt(idx));
+		}
+		str += '|' + viewVal;
+
 		return str;
 	}
 
@@ -144,7 +227,10 @@ StockAssistant.launch = function()
 	{
 		if (!str) return false;
 
-		let goods = str.split('!');
+		let tmp = str.split('|');
+
+		let goods = tmp[0].split('!');
+		let views = parseInt(tmp[1]);
 
 		for (let idx = 0; idx < goods.length; ++idx)
 		{
@@ -159,18 +245,37 @@ StockAssistant.launch = function()
 			};
 		}
 
-		for (let idx = 0; idx < StockAssistant.stockData.goods.length; ++idx)
+		for (let idx in columnList)
 		{
-			if (!loadData.goods[idx]) continue;
+			loadData.views[columnList[idx]] = views % 2;
+			views = Math.floor(views / 2);
+		}
 
-			let it = StockAssistant.stockData.goods[idx];
+		if (initialized)
+		{
+			// 保持データ反映
+			for (let idx = 0; idx < StockAssistant.stockData.goods.length; ++idx)
+			{
+				if (!loadData.goods[idx]) continue;
+	
+				let it = StockAssistant.stockData.goods[idx];
+	
+				it.boughtVal = loadData.goods[idx].boughtVal;
+				it.stock = loadData.goods[idx].stock;
+				it.min = loadData.goods[idx].min;
+				it.max = loadData.goods[idx].max;
+	
+				it.boughtValL.innerHTML = '$'+it.boughtVal;
+			}
 
-			it.boughtVal = loadData.goods[idx].boughtVal;
-			it.stock = loadData.goods[idx].stock;
-			it.min = loadData.goods[idx].min;
-			it.max = loadData.goods[idx].max;
-
-			it.boughtValL.innerHTML = '$'+it.boughtVal;
+			// 表示切り替え反映
+			for (let idx in columnList)
+			{
+				if (StockAssistant.stockData.views[columnList[idx]] !== loadData.views[columnList[idx]])
+				{
+					StockAssistant.toggleColumnView(columnList[idx]);
+				}
+			}
 		}
 	}
 
@@ -287,6 +392,57 @@ StockAssistant.launch = function()
 		}
 	}
 
+	StockAssistant.toggleColumnView = function(id)
+	{
+		StockAssistant.stockData.views[id] = 1 - StockAssistant.stockData.views[id];
+
+		if (StockAssistant.stockData.views[id])
+		{
+			l('toggleView_'+id).classList.remove('bankButtonOff');
+		}
+		else
+		{
+			l('toggleView_'+id).classList.add('bankButtonOff');
+		}
+		let display = StockAssistant.stockData.views[id] ? 'block' : 'none' ;
+		
+		for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
+		{
+			StockAssistant.stockData.goods[idx].columnL[id].style.display = display;
+		}
+	}
+
+	StockAssistant.resetVal = function(id)
+	{
+		switch (id)
+		{
+			case columnList[2]:
+				// minVal
+				for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
+				{
+					let good = StockAssistant.stockMarket.goodsById[idx];
+					let it = StockAssistant.stockData.goods[idx];
+					
+					val = Number(Beautify(good.val,2));
+					it.min = val;
+					it.minL.innerHTML = '$'+val;
+				}
+				break;
+			case columnList[3]:
+				// maxVal
+				for (let idx = 0; idx < StockAssistant.stockMarket.goodsById.length; ++idx)
+				{
+					let good = StockAssistant.stockMarket.goodsById[idx];
+					let it = StockAssistant.stockData.goods[idx];
+					
+					val = Number(Beautify(good.val,2));
+					it.max = val;
+					it.maxL.innerHTML = '$'+val;
+				}
+				break;
+		}
+	}
+
 	//////////////////////////////////////////////////
 	// private method
 	//////////////////////////////////////////////////
@@ -295,7 +451,7 @@ StockAssistant.launch = function()
 	{
 		let div = document.createElement('div');
 		div.innerHTML = '<div class="bankSymbol" style="margin:1px 0px;display:block;font-size:10px;width:100%;background:linear-gradient(to right,transparent,#333,#333,transparent);padding:2px 0px;overflow:hidden;white-space:nowrap;"> ' + name + '： <span style="font-weight:bold;" id="' + key + '">' + value + '</span></div>';
-		return div;
+		return div.firstChild;
 	}
 
 	function modeUpdateById(id)

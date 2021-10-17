@@ -7,6 +7,8 @@ ModLanguage('JA', {
 	"Mode" : "モード",
 	"Duration" : "残りティック",
 	"change the seconds per tick" : "1ティックの秒数を変更",
+	"display switching" : "表示切り替え",
+	"display reset" : "表示リセット",
 	// モードの名称
 	"Stable" : "安定",
 	"Slow Rise" : "緩やかな上昇",
