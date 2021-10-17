@@ -138,8 +138,8 @@ StockAssistant.launch = function()
 			{
 				boughtVal = loadData.goods[idx].boughtVal;
 				stock = loadData.goods[idx].stock;
-				min = loadData.goods[idx].min;
-				max = loadData.goods[idx].max;
+				if (loadData.goods[idx].min !==0) min = loadData.goods[idx].min;
+				if (loadData.goods[idx].max !==0) max = loadData.goods[idx].max;
 			}
 			// データ無いけど購入済の場合は購入価格が不明なので基準価格を入れておく
 			if ((boughtVal == 0 || stock == 0) && good.stock != 0)
