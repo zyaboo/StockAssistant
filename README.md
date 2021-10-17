@@ -3,18 +3,20 @@
 Coockie Clicker([Steam](https://store.steampowered.com/app/1454400/Cookie_Clicker/))の株取引を補助する為のMODです。  
 実績解除には影響しません。  
 
-![StockAssistant](https://user-images.githubusercontent.com/91243835/134629261-f57cc796-f5b0-42aa-ae54-ed194ab2486a.png)
+![StockAssistant](https://user-images.githubusercontent.com/91243835/137608793-e56041a6-fc88-4f9a-b3ed-0926e4f7e465.png)
 
 [中文说明](./README-zh_CN.md)
 
 # 機能
-* 有益な情報を可視化
+* 有益な情報を可視化(任意で非表示にも可能)
   * 購入価格
   * 基準価格
   * 観測した最小価格
   * 観測した最大価格
   * 現在のモード
   * モードの残りTick数
+* 観測値はリセット可能
+  * 最小価格と最大価格はリセットすると現在の価格になる
 * 株価が変動するまでの1Tickの秒数を変更
   * 変更した時間はゲームを再ロードすると60秒に戻ります
 
