@@ -92,12 +92,12 @@ StockAssistant.launch = function()
 		let optStr 
 			= '<div style="padding: 1px 4px;">'
 			+ '<span class="bankSymbol">' + loc('display switching') + '</span>'
-			+ '<div class="bankButton bankButtonBuy" id="toggleView_boughtValue">' + loc('Bought value') + '</div>'
-			+ '<div class="bankButton bankButtonBuy" id="toggleView_restingValue">' + loc('Resting value') + '</div>'
-			+ '<div class="bankButton bankButtonBuy" id="toggleView_minValue">' + loc('Min value') + '</div>'
-			+ '<div class="bankButton bankButtonBuy" id="toggleView_maxValue">' + loc('Max value') + '</div>'
-			+ '<div class="bankButton bankButtonBuy" id="toggleView_mode">' + loc('Mode') + '</div>'
-			+ '<div class="bankButton bankButtonBuy" id="toggleView_duration">' + loc('Duration') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_boughtValue">' + loc('Bought value') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_restingValue">' + loc('Resting value') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_minValue">' + loc('Min value') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_maxValue">' + loc('Max value') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_mode">' + loc('Mode') + '</div>'
+			+ '<div class="bankButton bankButtonSell" id="toggleView_duration">' + loc('Duration') + '</div>'
 			+ '</div>';
 		l('bankHeader').firstChild.insertAdjacentHTML('beforeend', optStr);
 
