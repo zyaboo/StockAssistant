@@ -1,6 +1,8 @@
 # Stock Assistant
 
-Coockie Clicker([Steam](https://store.steampowered.com/app/1454400/Cookie_Clicker/))股票辅助mod
+Coockie Clicker([Steam](https://store.steampowered.com/app/1454400/Cookie_Clicker/))股票辅助 mod
+
+此 mod 不会禁用成就。
 
 ![StockAssistant](https://user-images.githubusercontent.com/91243835/134629261-f57cc796-f5b0-42aa-ae54-ed194ab2486a.png)
 
@@ -9,7 +11,7 @@ Coockie Clicker([Steam](https://store.steampowered.com/app/1454400/Cookie_Clicke
   * 买入价格
   * 标准价格
   * 已知的最低价格
-  * 已知的的最高价格
+  * 已知的最高价格
   * 当前状态
   * 当前状态剩余tick数
 * 更改股市1Tick的周期（秒）
