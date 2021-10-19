@@ -26,6 +26,8 @@ ModLanguage('ZH-CN', {
 	"Mode" : "状态",
 	"Duration" : "剩余tick数",
 	"change the seconds per tick" : "更改每个tick的周期（秒） ",
+	"display switching" : "开关显示",
+	"display reset" : "重设显示",
 	// 模式名称
 	"Stable" : "稳定",
 	"Slow Rise" : "缓慢上升",
