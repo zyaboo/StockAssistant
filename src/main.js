@@ -266,6 +266,8 @@ StockAssistant.launch = function()
 				it.max = loadData.goods[idx].max;
 	
 				it.boughtValL.innerHTML = '$'+it.boughtVal;
+				it.minL.innerHTML = '$'+it.min;
+				it.maxL.innerHTML = '$'+it.max;
 			}
 
 			// 表示切り替え反映
