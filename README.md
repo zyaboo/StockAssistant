@@ -21,6 +21,13 @@ Coockie Clicker([Steam](https://store.steampowered.com/app/1454400/Cookie_Clicke
   * 変更した時間はゲームを再ロードすると60秒に戻ります
 
 # 導入方法
+
+## Steam Workshopから入れる場合
+1. [ここ](https://steamcommunity.com/sharedfiles/filedetails/?id=2685407336)からワークショップを開く。
+2. サブスクライブ ボタンを押す。
+
+## 手動で入れる場合
+
 1. [ここ](https://github.com/zyaboo/StockAssistant/releases/latest/download/StockAssistant.zip)からソースコードの入手し解凍する。
 2. ゲーム内の「MODの管理」から「/modsのフォルダーを開く」ボタンを押下。
 3. 解凍した「StockAssistant」を「workshop」フォルダの中に入れる。
