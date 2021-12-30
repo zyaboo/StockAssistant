@@ -15,7 +15,7 @@ ModLanguage('JA', {
 	"Slow Fall" : "緩やかな下落",
 	"Fast Rise" : "急上昇",
 	"Fast Fall" : "急降下",
-	"Caostic" : "乱高下",
+	"Chaotic" : "乱高下",
 });
 ModLanguage('ZH-CN', {
 	// 标签
@@ -34,5 +34,5 @@ ModLanguage('ZH-CN', {
 	"Slow Fall" : "缓慢回落",
 	"Fast Rise" : "快速拉升",
 	"Fast Fall" : "快速回落",
-	"Caostic" : "涨落不定",
+	"Chaotic" : "涨落不定",
 });
