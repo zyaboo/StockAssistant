@@ -15,7 +15,7 @@ StockAssistant.launch = function()
 		2 : 'Slow Fall',
 		3 : 'Fast Rise',
 		4 : 'Fast Fall',
-		5 : 'Caostic'
+		5 : 'Chaotic'
 	};
 	function getModeName(mode)
 	{
